@@ -1,0 +1,69 @@
+ꦗꦸꦥꦸꦏ꧀ requests ꦢꦢꦶ ꦫꦶꦏꦸꦮꦺꦱ꧀
+ꦱꦏ bs4 ꦗꦸꦥꦸꦏ꧀ BeautifulSoup ꦢꦢꦶ ꦧꦠꦉ, NavigableString ꦢꦢꦶ ꦤꦱ, Tag ꦢꦢꦶ ꦠꦒ꧀
+ꦗꦸꦥꦸꦏ꧀ peewee ꦢꦢꦶ ꦥꦮ
+ꦗꦸꦥꦸꦏ꧀ time ꦢꦢꦶ ꦏꦭ
+ꦗꦸꦥꦸꦏ꧀ os ꦢꦢꦶ ꦲꦺꦴꦲꦺꦱ꧀
+ꦱꦏ dotenv ꦗꦸꦥꦸꦏ꧀ load_dotenv ꦢꦢꦶ ꦧꦸꦏꦣꦺꦴꦠꦺꦉ꧀
+
+ꦧꦸꦏꦣꦺꦴꦠꦺꦉ꧀()
+
+ꦢꦧ = ꦥꦮ.MySQLDatabase('ꦢꦱꦤꦩ', 
+        user=ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦲꦸꦱꦼꦂ'), 
+        password=ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦥꦱ꧀ꦢꦺꦧꦺ'), 
+        host= ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦲꦺꦴꦱ꧀ꦢꦺꦧꦺ'), 
+        port=3306)
+
+ꦏꦼꦭꦱ꧀ ꦣꦱꦂ(ꦥꦮ.Model):
+    ꦏꦼꦭꦱ꧀ Meta:
+        database = ꦢꦧ
+
+ꦏꦼꦭꦱ꧀ ꦢꦱꦤꦩ(ꦣꦱꦂ):
+    ꦏꦠ        = ꦥꦮ.CharField(max_length=255)
+    ꦠꦫꦗꦩꦲ   = ꦥꦮ.CharField(max_length=255)
+    ꦥꦗꦒ       = ꦥꦮ.IntegerField()
+    ꦲꦮꦭ      = ꦥꦮ.CharField(max_length=3)
+
+ꦢꦧ.connect()
+ꦢꦧ.create_tables([ꦢꦱꦤꦩ,], safe=True)
+
+ꦱꦸꦩ꧀ꦧꦼꦂ = [
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2662-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-a-b',
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2663-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-c-g',
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2664-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-h-k',
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2665-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-kh-p',
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2666-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-r-s',
+    'https://www.sastra.org/bahasa-dan-budaya/kamus-dan-leksikon/2667-bausastra-indonesia-jawi-purwadarminta-c-1939-1979-bagian-sy-z'
+]
+
+ꦏꦁꦒꦺꦴ ꦭꦫ ꦲꦶꦁ ꦱꦸꦩ꧀ꦧꦼꦂ:
+    ꦥꦿꦶꦤ꧀("ꦲꦩ꧀ꦫꦺꦴꦱꦺꦱ꧀ "+ꦭꦫ)
+    ꦭꦩꦤ꧀ = ꦫꦶꦏꦸꦮꦺꦱ꧀.get(ꦭꦫ)
+    ꦱꦥ = ꦧꦠꦉ(ꦭꦩꦤ꧀.text, 'html.parser')
+    ꦢꦉ = ꦱꦥ.find('div', {'id': 'markpage'})
+    ꦢꦠ = ꦢꦉ.find_all('dt')
+    ꦠꦼꦒꦼꦱ꧀ = ""
+    ꦏꦁꦒꦺꦴ ꦲ ꦲꦶꦁ ꦢꦠ:
+        ꦪꦺꦤ꧀ ꦢꦮ(ꦲ.text) > 0:
+            ꦠꦼꦒꦼꦱ꧀ = ꦲ.text
+        ꦏꦁꦒꦺꦴ ꦫꦏ ꦲꦶꦁ ꦲ.next_siblings:
+            ꦪꦺꦤ꧀ ꦧꦭꦤꦺ(ꦫꦏ, ꦤꦱ):
+                ꦠꦼꦫꦸꦱ꧀ꦱꦏꦺ
+            ꦪꦺꦤ꧀ ꦧꦭꦤꦺ(ꦫꦏ, ꦠꦒ꧀):
+                ꦪꦺꦤ꧀ ꦫꦏ.name == "dd":
+                    ꦪꦺꦤ꧀ ꦢꦸꦢꦸ '\n---' ꦲꦶꦁ ꦫꦏ.text:
+                        ꦲꦶꦱꦺꦤ꧀ = ꦢꦱꦤꦩ.select().where(ꦢꦱꦤꦩ.ꦏꦠ==ꦠꦼꦒꦼꦱ꧀)
+                        ꦪꦺꦤ꧀ ꦲꦶꦱꦺꦤ꧀.count() < 1:                            
+                            ꦪꦺꦤ꧀ ꦠꦼꦒꦼꦱ꧀[0].isalpha():
+                                ꦲꦮꦭ = ꦠꦼꦒꦼꦱ꧀[0]
+                            ꦭꦶꦪꦤꦺ:
+                                ꦲꦮꦭ = ꦠꦼꦒꦼꦱ꧀[1]
+                            ꦲꦶꦱꦺꦤ꧀ = ꦢꦱꦤꦩ.create(ꦏꦠ=ꦠꦼꦒꦼꦱ꧀, ꦠꦫꦗꦩꦲ=ꦫꦏ.text,ꦥꦗꦒ=ꦢꦮ(ꦠꦼꦒꦼꦱ꧀), ꦲꦮꦭ=ꦲꦮꦭ)
+                        ꦭꦶꦪꦤꦺ:
+                            ꦲꦶꦱꦺꦤ꧀ = ꦢꦱꦤꦩ.get(ꦢꦱꦤꦩ.ꦏꦠ==ꦠꦼꦒꦼꦱ꧀)                            
+                            ꦲꦚꦂ = ꦲꦶꦱꦺꦤ꧀.ꦏꦠ + " \n "+ ꦫꦏ.text
+                            ꦲꦶꦱꦺꦤ꧀.ꦏꦠ = ꦲꦚꦂ
+                            ꦲꦶꦱꦺꦤ꧀.save()
+                ꦲꦸꦠꦮꦭꦶꦪꦤꦺ ꦫꦏ.name == "dt":
+                    ꦭꦺꦫꦺꦤ꧀
+        
+    ꦏꦭ.sleep(.5)

@@ -1,0 +1,53 @@
+ꦗꦸꦥꦸꦏ꧀ peewee ꦢꦢꦶ ꦥꦮ
+ꦗꦸꦥꦸꦏ꧀ os ꦢꦢꦶ ꦲꦺꦴꦲꦺꦱ꧀
+ꦗꦸꦥꦸꦏ꧀ PySimpleGUI ꦢꦢꦶ ꦱꦒ
+ꦱꦏ dotenv ꦗꦸꦥꦸꦏ꧀ load_dotenv ꦢꦢꦶ ꦧꦸꦏꦣꦺꦴꦠꦺꦉ꧀
+
+ꦧꦸꦏꦣꦺꦴꦠꦺꦉ꧀()
+
+ꦢꦧ = ꦥꦮ.MySQLDatabase('ꦢꦱꦤꦩ', 
+        user=ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦲꦸꦱꦼꦂ'), 
+        password=ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦥꦱ꧀ꦢꦺꦧꦺ'), 
+        host= ꦲꦺꦴꦲꦺꦱ꧀.getenv('ꦲꦺꦴꦱ꧀ꦢꦺꦧꦺ'), 
+        port=3306)
+
+ꦏꦼꦭꦱ꧀ ꦣꦱꦂ(ꦥꦮ.Model):
+    ꦏꦼꦭꦱ꧀ Meta:
+        database = ꦢꦧ
+
+ꦏꦼꦭꦱ꧀ ꦢꦱꦤꦩ(ꦣꦱꦂ):
+    ꦏꦠ        = ꦥꦮ.CharField(max_length=255)
+    ꦠꦫꦗꦩꦲ   = ꦥꦮ.CharField(max_length=255)
+    ꦥꦗꦒ       = ꦥꦮ.IntegerField()
+    ꦲꦮꦭ      = ꦥꦮ.CharField(max_length=3)
+
+ꦢꦧ.connect()
+ꦢꦧ.create_tables([ꦢꦱꦤꦩ,], safe=True)
+
+ꦭꦪꦠ = [[ꦱꦒ.Text("ꦩꦢꦺꦴꦱꦶꦥꦸꦤꦥ?", font='Helvetica 20')],
+          [ꦱꦒ.Input(key='-INPUT-', size=(꧕꧐,꧒), font='Helvetica 20')],
+          [ꦱꦒ.Text(size=(꧖꧐,꧔), key='-OUTPUT-', font='Helvetica 14')],
+          [ꦱꦒ.Button('ꦲꦸꦥꦢꦶ', font='Helvetica 16' ), ꦱꦒ.Button('ꦕꦼꦏꦥ꧀', font='Helvetica 16')]]
+
+# ꦢꦩꦼꦭ꧀ꦮꦶꦤ꧀ꦣꦺꦴ
+ꦮꦶꦤ꧀ꦣꦺꦴ = ꦱꦒ.Window('ꦥꦸꦂꦮꦢꦂꦩꦶꦚ꧀ꦠꦺꦴ', ꦭꦪꦠ, size=(꧕꧐꧐, ꧒꧕꧐), use_ttk_buttons=True)
+
+# ꦤꦩ꧀ꦥꦶꦭ꧀ꦭꦏꦼꦤ꧀
+ꦱꦮꦼꦠꦮꦶꦱ꧀ ꦧꦼꦤꦼꦂ:
+    ꦲꦺꦉꦺꦤ꧀, ꦧꦶꦗꦶ = ꦮꦶꦤ꧀ꦣꦺꦴ.read()
+    # ꦢꦶꦕꦺꦏ꧀ꦪꦺꦤ꧀ꦲꦶꦱꦶꦤꦺꦕꦼꦏꦥ꧀
+    ꦪꦺꦤ꧀ ꦲꦺꦉꦺꦤ꧀ == ꦱꦒ.WINDOW_CLOSED ꦲꦸꦠꦮ ꦲꦺꦉꦺꦤ꧀ == 'ꦕꦼꦏꦥ꧀':
+        ꦭꦺꦫꦺꦤ꧀
+    # ꦢꦶꦠꦩ꧀ꦥꦶꦭ꧀ꦭꦏꦺ
+    ꦠꦏꦱ = ꦧꦶꦗꦶ['-INPUT-']
+    ꦥꦿꦶꦤ꧀(ꦠꦏꦱ)
+    ꦠꦫꦗꦩ = ꦢꦱꦤꦩ.select().where(ꦢꦱꦤꦩ.ꦏꦠ == ꦠꦏꦱ.strip())
+    ꦪꦺꦤ꧀ ꦠꦫꦗꦩ.count() > 0:
+        ꦠꦫꦗꦩ = ꦠꦫꦗꦩ.get()
+        ꦫꦱꦭꦠ = ꦠꦫꦗꦩ.ꦠꦫꦗꦩꦲ
+    ꦭꦶꦪꦤꦺ:
+        ꦫꦱꦭꦠ = "ꦥꦔꦥꦸꦚ꧀ꦠꦼꦤ꧀ ꦧꦺꦴꦠꦼꦤ꧀ꦏꦼꦥꦁꦒꦶꦃ"
+    ꦮꦶꦤ꧀ꦣꦺꦴ['-OUTPUT-'].update( ꦫꦱꦭꦠ, text_color='yellow')
+
+# ꦢꦶꦫꦩ꧀ꦥꦸꦁꦔꦶ
+ꦮꦶꦤ꧀ꦣꦺꦴ.close()
